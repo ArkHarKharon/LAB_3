@@ -7,9 +7,8 @@ int main()
 	srand(time(0));
 
 	std::vector<int> main_vector{};
-	main_vector.resize(100);
-	random_set(main_vector, 1, 999);
-	print_show(main_vector,10,45);
+	Colors menu_color{ DEFAULT };
 
+	main_menu(main_vector, menu_color);
 	return 0;
 }
