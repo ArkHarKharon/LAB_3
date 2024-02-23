@@ -145,80 +145,10 @@ void loading(int time)
 	system("cls");
 }
 
-int increm_search(std::vector<int> const &main_vector,int element)
-{
-	for (int index{ 0 }; index < main_vector.size(); index++)
-	{
-		if (main_vector.at(index) == element)
-			return index;
-		else
-			return -1;
-	}
-}
-
-int jump_search(std::vector<int> const &main_vector, int element)
-{
-	int step = sqrt(main_vector.size()) ;
-	int last_step{ 0 };
-
-	while (main_vector.at(min(step, main_vector.size())) < element)
-	{
-		last_step = step;
-		step += sqrt(main_vector.size());
-		if (last_step >= main_vector.size())
-			return -1;
-	}
-	while (main_vector.at(last_step) < element)
-	{
-		last_step++;
-		if (last_step == min(step, main_vector.size()))
-			return -1;
-	}
-	if (main_vector.at(last_step) == element)
-		return last_step;
-}
-
-int binary_search(std::vector<int> const &main_vector, int element) //циклический
-{
-	int left{ 0 };
-	int right= (main_vector.size() - 1) ;
-	int middle{0};
-	int step{ 0 };
-	bool flag{ false };
-
-	while (left <= right)
-	{
-		step++;
-		middle = (left + right) / 2;
-		if (element == main_vector.at(middle))
-		{
-			flag = true;
-			return middle;
-		}
-		if (element < main_vector.at(middle))
-			right = middle - 1;
-		else
-			left = middle + 1;
-	}
-}
-
-int binary_search(std::vector<int> const& main_vector, int element, int left, int right,int &step)
-{
-	step++;
-	int middle{ (left + right) / 2 };
-	if (left > right)  
-		return -1;
-	if (element == main_vector.at(middle)) 
-		return middle;
-	if (element < main_vector.at(middle))    
-		return   binary_search(main_vector,element, left, middle - 1,step);
-	else           
-		return   binary_search(main_vector, element, left, middle + 1, step);
-}
 
 void main_menu(std::vector<int>& main_vector, Colors& color)
 {
-	//greetings();
+	greetings();
 
 	std::cout
 		<< "Но ладно,даавай разберемся в матрицей\n"
@@ -262,6 +192,8 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 	int element_jump{};
 	int element_binary{};
 
+	int temp_increment{ 0 };
+
 	std::chrono::steady_clock::time_point start_increm{};
 	std::chrono::steady_clock::time_point start_jump{};
 	std::chrono::steady_clock::time_point start_binary{};
@@ -294,7 +226,7 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 		case(SEARCHING):
 			system("cls");
 			std::cout << "Запускаю сортировку...";
-			//std::sort(begin(main_vector),end(main_vector));
+			std::sort(begin(main_vector),end(main_vector));
 			Sleep(2000);
 			system("cls");
 			loading(4000);
@@ -302,6 +234,8 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 
 			do
 			{
+				print_matrix(main_vector, len);
+				set_color(color);
 				std::cout
 					<< "\t\t\t    ----------------ПОИСК----------------\n"
 					<< "1) Я хочу найти элементы с помощью последовательного поиска\n"
@@ -332,12 +266,15 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 
 					duration_increm = (finish_increm - start_increm);
 
-					if (index_increm != -1)
+					if (index_increm != (-1) )
 					{
 						print_matrix(main_vector, len, index_increm);
+						set_color(color);
 						std::cout
 							<< "Элемент " << main_vector.at(index_increm) << " обнаружен на позиции "
 							<< index_increm << ".\nПоследовательный поиск занял " << duration_increm.count() << "мкс";
+						Sleep(4000);
+						system("cls");
 						break;
 					}
 					else
@@ -354,7 +291,7 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 						<< "Искомый элемент: ";
 					std::cin >> element_jump;
 					system("cls");
-					std::cout << "Запаускаю поиск...";
+					std::cout << "Запускаю поиск...";
 					Sleep(2000);
 					system("cls");
 					loading(4000);
@@ -368,9 +305,13 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 					if (index_jump != -1)
 					{
 						print_matrix(main_vector, len, index_jump);
+						set_color(color);
 						std::cout
 							<< "Элемент " << main_vector.at(index_jump) << " обнаружен на позиции "
 							<< index_jump << ".\nПоиск прыжками занял " << duration_jump.count() << "мкс";
+						Sleep(4000);
+						system("cls");
+						set_color(color);
 						break;
 					}
 					else
@@ -387,7 +328,7 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 						<< "Искомый элемент: ";
 					std::cin >> element_binary;
 					system("cls");
-					std::cout << "Запаускаю поиск...";
+					std::cout << "Запускаю поиск...";
 					Sleep(2000);
 					system("cls");
 					loading(4000);
@@ -401,11 +342,13 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 					if (index_binary != -1)
 					{
 						print_matrix(main_vector, len, index_binary);
+						set_color(color);
 						std::cout
 							<< "Элемент " << main_vector.at(index_binary) << " обнаружен на позиции "
 							<< index_binary << ".\nБинарный поиск занял " << duration_binary.count() << "мкс";
 						Sleep(4000);
 						system("cls");
+						set_color(color);
 						break;
 					}
 					else
@@ -514,12 +457,12 @@ void main_menu(std::vector<int>& main_vector, Colors& color)
 					system("cls");
 					break;
 
-				case(MAIN_MENU):
-					std::cout << termcolor::green << "Хорошего дня!" << termcolor::reset;
-					break;
+				case(MAIN_MENU): break;
 				}
 			} while (answer_settings != MAIN_MENU);
-			
+		case(EXIT):
+			std::cout << termcolor::green << "Хорошего дня!" << termcolor::reset;
+			break;
 		}
 	}while (answer_menu != EXIT);
 }
